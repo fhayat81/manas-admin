@@ -173,7 +173,6 @@ export default function MediaCardsPage() {
                   <TableHead>Date</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Detail</TableHead>
-                  <TableHead>Link</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -185,13 +184,6 @@ export default function MediaCardsPage() {
                     <TableCell>{card.date}</TableCell>
                     <TableCell className="max-w-xs truncate">{card.description}</TableCell>
                     <TableCell className="max-w-xs truncate">{card.detailedDescription?.slice(0, 40) || ''}</TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm" asChild>
-                        <a href={card.link} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button
@@ -286,7 +278,6 @@ function MediaCardForm({
     source: card?.source || "",
     description: card?.description || "",
     imageUrl: card?.imageUrl || "",
-    link: card?.link || "",
     detailedDescription: card?.detailedDescription || "",
   })
 
@@ -353,16 +344,6 @@ function MediaCardForm({
           type="text"
           value={formData.imageUrl}
           onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="link">Article Link</Label>
-        <Input
-          id="link"
-          type="text"
-          value={formData.link}
-          onChange={(e) => setFormData({ ...formData, link: e.target.value })}
           required
         />
       </div>

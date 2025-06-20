@@ -58,7 +58,6 @@ export interface MediaCard {
   source: string
   description: string
   imageUrl: string
-  link: string
   detailedDescription?: string
 }
 
