@@ -34,7 +34,7 @@ export default function MediaCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = cards.filter(
@@ -51,7 +51,7 @@ export default function MediaCardsPage() {
       const data = await getAllMediaCards()
       setCards(data)
       setFilteredCards(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch media cards",
@@ -71,7 +71,7 @@ export default function MediaCardsPage() {
         title: "Success",
         description: "Media card created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create media card",
@@ -91,7 +91,7 @@ export default function MediaCardsPage() {
         title: "Success",
         description: "Media card updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update media card",
@@ -111,7 +111,7 @@ export default function MediaCardsPage() {
         title: "Success",
         description: "Media card deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete media card",
@@ -254,7 +254,7 @@ export default function MediaCardsPage() {
           <DialogHeader>
             <DialogTitle>Delete Media Card</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedCard?.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{selectedCard?.title}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -277,7 +277,7 @@ function MediaCardForm({
   onCancel,
 }: {
   card?: MediaCard
-  onSubmit: (data: any) => void
+  onSubmit: (data: Omit<MediaCard, "_id" | "id">) => void
   onCancel: () => void
 }) {
   const [formData, setFormData] = useState({

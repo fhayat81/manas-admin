@@ -36,7 +36,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = users.filter(
@@ -53,7 +53,7 @@ export default function UsersPage() {
       const data = await getAllUsers()
       setUsers(data)
       setFilteredUsers(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch users",
@@ -75,7 +75,7 @@ export default function UsersPage() {
         title: "Success",
         description: "User updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update user",
@@ -95,7 +95,7 @@ export default function UsersPage() {
         title: "Success",
         description: "User deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete user",

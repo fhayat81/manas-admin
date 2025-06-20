@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchAdminUsers()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = adminUsers.filter((user) =>
@@ -52,7 +52,7 @@ export default function AdminUsersPage() {
       const data = await getAllAdminUsers()
       setAdminUsers(data)
       setFilteredAdminUsers(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch admin users",
@@ -72,7 +72,7 @@ export default function AdminUsersPage() {
         title: "Success",
         description: "Admin user created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create admin user",
@@ -91,7 +91,7 @@ export default function AdminUsersPage() {
         title: "Success",
         description: "Admin user updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update admin user",
@@ -110,7 +110,7 @@ export default function AdminUsersPage() {
         title: "Success",
         description: "Admin user deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete admin user",
@@ -243,7 +243,7 @@ export default function AdminUsersPage() {
           <DialogHeader>
             <DialogTitle>Delete Admin User</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedAdminUser?.email}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{selectedAdminUser?.email}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

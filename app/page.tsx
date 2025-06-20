@@ -30,7 +30,7 @@ export default function LoginPage() {
         title: "OTP Sent",
         description: "Please check your email for the OTP code.",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to send OTP. Please try again.",
@@ -54,7 +54,7 @@ export default function LoginPage() {
         description: "Welcome to MANAS Admin Panel",
       })
       router.push("/dashboard")
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Invalid OTP. Please try again.",

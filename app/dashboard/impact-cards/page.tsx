@@ -34,7 +34,7 @@ export default function ImpactCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = cards.filter(
@@ -50,7 +50,7 @@ export default function ImpactCardsPage() {
       const data = await getAllImpactCards()
       setCards(data)
       setFilteredCards(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch impact cards",
@@ -70,7 +70,7 @@ export default function ImpactCardsPage() {
         title: "Success",
         description: "Impact card created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create impact card",
@@ -90,7 +90,7 @@ export default function ImpactCardsPage() {
         title: "Success",
         description: "Impact card updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update impact card",
@@ -110,7 +110,7 @@ export default function ImpactCardsPage() {
         title: "Success",
         description: "Impact card deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete impact card",
@@ -247,7 +247,7 @@ export default function ImpactCardsPage() {
           <DialogHeader>
             <DialogTitle>Delete Impact Card</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedCard?.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{selectedCard?.title}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -270,7 +270,7 @@ function ImpactCardForm({
   onCancel,
 }: {
   card?: ImpactCard
-  onSubmit: (data: any) => void
+  onSubmit: (data: Omit<ImpactCard, "_id" | "id">) => void
   onCancel: () => void
 }) {
   const [formData, setFormData] = useState({

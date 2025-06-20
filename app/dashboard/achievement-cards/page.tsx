@@ -40,7 +40,7 @@ export default function AchievementCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = cards.filter(
@@ -56,7 +56,7 @@ export default function AchievementCardsPage() {
       const data = await getAllAchievementCards()
       setCards(data)
       setFilteredCards(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch achievement cards",
@@ -76,7 +76,7 @@ export default function AchievementCardsPage() {
         title: "Success",
         description: "Achievement card created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create achievement card",
@@ -96,7 +96,7 @@ export default function AchievementCardsPage() {
         title: "Success",
         description: "Achievement card updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update achievement card",
@@ -116,7 +116,7 @@ export default function AchievementCardsPage() {
         title: "Success",
         description: "Achievement card deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete achievement card",
@@ -253,7 +253,7 @@ export default function AchievementCardsPage() {
           <DialogHeader>
             <DialogTitle>Delete Achievement Card</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedCard?.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{selectedCard?.title}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -276,7 +276,7 @@ function AchievementCardForm({
   onCancel,
 }: {
   card?: AchievementCard
-  onSubmit: (data: any) => void
+  onSubmit: (data: Omit<AchievementCard, "_id" | "id">) => void
   onCancel: () => void
 }) {
   const [formData, setFormData] = useState({

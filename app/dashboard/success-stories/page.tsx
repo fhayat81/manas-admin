@@ -40,7 +40,7 @@ export default function SuccessStoriesPage() {
 
   useEffect(() => {
     fetchStories()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = stories.filter(
@@ -57,7 +57,7 @@ export default function SuccessStoriesPage() {
       const data = await getAllSuccessStories()
       setStories(data)
       setFilteredStories(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch success stories",
@@ -77,7 +77,7 @@ export default function SuccessStoriesPage() {
         title: "Success",
         description: "Success story created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create success story",
@@ -97,7 +97,7 @@ export default function SuccessStoriesPage() {
         title: "Success",
         description: "Success story updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update success story",
@@ -117,7 +117,7 @@ export default function SuccessStoriesPage() {
         title: "Success",
         description: "Success story deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete success story",
@@ -185,7 +185,7 @@ export default function SuccessStoriesPage() {
                   <TableRow key={story._id}>
                     <TableCell className="font-medium">{story.author}</TableCell>
                     <TableCell>{story.location}</TableCell>
-                    <TableCell className="max-w-md truncate">"{story.quote}"</TableCell>
+                    <TableCell className="max-w-md truncate">&quot;{story.quote}&quot;</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button
@@ -275,7 +275,7 @@ function SuccessStoryForm({
   onCancel,
 }: {
   story?: SuccessStory
-  onSubmit: (data: any) => void
+  onSubmit: (data: Omit<SuccessStory, "_id" | "id">) => void
   onCancel: () => void
 }) {
   const [formData, setFormData] = useState({

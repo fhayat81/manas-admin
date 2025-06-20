@@ -1,3 +1,5 @@
+import type { User, ImpactCard, AchievementCard, SuccessStory, MediaCard } from '../../lib/api';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/admin";
 
 function getAuthHeaders(): Record<string, string> {
@@ -44,7 +46,7 @@ export async function getUserById(id: string) {
   return res.json();
 }
 
-export async function updateUser(id: string, data: any) {
+export async function updateUser(id: string, data: Partial<User>) {
   const res = await fetch(`${API_BASE}/users/${id}`, {
     method: "PUT",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -72,7 +74,7 @@ export async function getAllImpactCards() {
   return res.json();
 }
 
-export async function createImpactCard(data: any) {
+export async function createImpactCard(data: Omit<ImpactCard, "_id" | "id">) {
   const res = await fetch(`${API_BASE}/impact-cards`, {
     method: "POST",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -82,7 +84,7 @@ export async function createImpactCard(data: any) {
   return res.json();
 }
 
-export async function updateImpactCard(id: string, data: any) {
+export async function updateImpactCard(id: string, data: Partial<ImpactCard>) {
   const res = await fetch(`${API_BASE}/impact-cards/${id}`, {
     method: "PUT",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -110,7 +112,7 @@ export async function getAllAchievementCards() {
   return res.json();
 }
 
-export async function createAchievementCard(data: any) {
+export async function createAchievementCard(data: Omit<AchievementCard, "_id" | "id">) {
   const res = await fetch(`${API_BASE}/achievement-cards`, {
     method: "POST",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -120,7 +122,7 @@ export async function createAchievementCard(data: any) {
   return res.json();
 }
 
-export async function updateAchievementCard(id: string, data: any) {
+export async function updateAchievementCard(id: string, data: Partial<AchievementCard>) {
   const res = await fetch(`${API_BASE}/achievement-cards/${id}`, {
     method: "PUT",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -148,7 +150,7 @@ export async function getAllSuccessStories() {
   return res.json();
 }
 
-export async function createSuccessStory(data: any) {
+export async function createSuccessStory(data: Omit<SuccessStory, "_id" | "id">) {
   const res = await fetch(`${API_BASE}/success-stories`, {
     method: "POST",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -158,7 +160,7 @@ export async function createSuccessStory(data: any) {
   return res.json();
 }
 
-export async function updateSuccessStory(id: string, data: any) {
+export async function updateSuccessStory(id: string, data: Partial<SuccessStory>) {
   const res = await fetch(`${API_BASE}/success-stories/${id}`, {
     method: "PUT",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -186,7 +188,7 @@ export async function getAllMediaCards() {
   return res.json();
 }
 
-export async function createMediaCard(data: any) {
+export async function createMediaCard(data: Omit<MediaCard, "_id" | "id">) {
   const res = await fetch(`${API_BASE}/media-cards`, {
     method: "POST",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },
@@ -196,7 +198,7 @@ export async function createMediaCard(data: any) {
   return res.json();
 }
 
-export async function updateMediaCard(id: string, data: any) {
+export async function updateMediaCard(id: string, data: Partial<MediaCard>) {
   const res = await fetch(`${API_BASE}/media-cards/${id}`, {
     method: "PUT",
     headers: { ...getAuthHeaders(), "Content-Type": "application/json", "Accept": "application/json" },

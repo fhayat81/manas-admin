@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Search, Edit, Trash2, Plus, Calendar } from "lucide-react"
+import { Search, Edit, Trash2, Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import {
   getAllEvents,
@@ -38,7 +38,7 @@ export default function EventsPage() {
 
   useEffect(() => {
     fetchEvents()
-  }, [])
+  })
 
   useEffect(() => {
     const filtered = events.filter((event) =>
@@ -53,7 +53,7 @@ export default function EventsPage() {
       const data = await getAllEvents()
       setEvents(data)
       setFilteredEvents(data)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch events",
@@ -73,7 +73,7 @@ export default function EventsPage() {
         title: "Success",
         description: "Event created successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create event",
@@ -92,7 +92,7 @@ export default function EventsPage() {
         title: "Success",
         description: "Event updated successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update event",
@@ -111,7 +111,7 @@ export default function EventsPage() {
         title: "Success",
         description: "Event deleted successfully",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete event",
@@ -250,7 +250,7 @@ export default function EventsPage() {
           <DialogHeader>
             <DialogTitle>Delete Event</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedEvent?.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{selectedEvent?.title}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -273,7 +273,7 @@ function EventForm({
   onCancel,
 }: {
   event?: Event
-  onSubmit: (data: any) => void
+  onSubmit: (data: Omit<Event, "_id" | "createdAt" | "updatedAt">) => void
   onCancel: () => void
 }) {
   const [formData, setFormData] = useState({
