@@ -1,5 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 
+console.log("API_BASE_URL: ", API_BASE_URL)
+
 // Types based on backend models
 export interface User {
   _id: string
