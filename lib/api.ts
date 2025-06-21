@@ -166,12 +166,12 @@ export const getAuthorizedEmails = async (): Promise<string[]> => {
     if (!response.ok) throw new Error("Failed to fetch admin users")
     const adminUsers = await response.json()
     return [
-      'manasfoundation2025@gmail.com', // Hardcoded admin email
+      process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'manasfoundation2025@gmail.com', // Use env variable
       ...adminUsers.map((user: any) => user.email)
     ]
   } catch (error) {
-    // Fallback to hardcoded email if API fails
-    return ['manasfoundation2025@gmail.com']
+    // Fallback to env variable if API fails
+    return [process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'manasfoundation2025@gmail.com']
   }
 }
 
