@@ -27,31 +27,43 @@ export default function DashboardPage() {
     const fetchStats = async () => {
       try {
         console.log("Fetching dashboard stats...")
+        
+        // Fetch each stat individually to handle errors gracefully
+        const fetchWithFallback = async (apiCall: () => Promise<any[]>, fallback: number = 0) => {
+          try {
+            const data = await apiCall()
+            return Array.isArray(data) ? data.length : fallback
+          } catch (error) {
+            console.error("API call failed:", error)
+            return fallback
+          }
+        }
+
         const [users, impactCards, achievementCards, successStories, mediaCards, volunteers] = await Promise.all([
-          getAllUsers(),
-          getAllImpactCards(),
-          getAllAchievementCards(),
-          getAllSuccessStories(),
-          getAllMediaCards(),
-          getAllVolunteers(),
+          fetchWithFallback(getAllUsers),
+          fetchWithFallback(getAllImpactCards),
+          fetchWithFallback(getAllAchievementCards),
+          fetchWithFallback(getAllSuccessStories),
+          fetchWithFallback(getAllMediaCards),
+          fetchWithFallback(getAllVolunteers),
         ])
 
         console.log("Stats fetched successfully:", {
-          users: users.length,
-          impactCards: impactCards.length,
-          achievementCards: achievementCards.length,
-          successStories: successStories.length,
-          mediaCards: mediaCards.length,
-          volunteers: volunteers.length,
+          users,
+          impactCards,
+          achievementCards,
+          successStories,
+          mediaCards,
+          volunteers,
         })
 
         setStats({
-          users: users.length,
-          impactCards: impactCards.length,
-          achievementCards: achievementCards.length,
-          successStories: successStories.length,
-          mediaCards: mediaCards.length,
-          volunteers: volunteers.length,
+          users,
+          impactCards,
+          achievementCards,
+          successStories,
+          mediaCards,
+          volunteers,
         })
       } catch (error) {
         console.error("Error fetching stats:", error)

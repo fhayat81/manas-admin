@@ -152,6 +152,7 @@ export const verifyAdminOTP = async (email: string, otp: string) => {
 // Helper function to get auth headers
 const getAuthHeaders = () => {
   const token = localStorage.getItem("admin_jwt")
+  console.log("Auth token exists:", !!token)
   return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -197,17 +198,18 @@ export const getAuthorizedAdminEmails = async (): Promise<string[]> => {
 
 // User Management
 export const getAllUsers = async (): Promise<User[]> => {
+  console.log("Fetching users...")
   const response = await fetch(`${API_BASE_URL}/admin/users`, {
       method: 'GET',
       headers: getAuthHeaders(),
       mode: 'cors'
   })
 
-  console.log("response: ", response)
+  console.log("Users response status:", response.status)
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.log("Error response:", errorText);
+    console.log("Users error response:", errorText);
     throw new Error("Failed to fetch users")
   }
 
@@ -253,11 +255,16 @@ export const deleteUser = async (id: string): Promise<void> => {
 
 // Impact Cards Management
 export const getAllImpactCards = async (): Promise<ImpactCard[]> => {
+  console.log("Fetching impact cards...")
   const response = await fetch(`${API_BASE_URL}/admin/impact-cards`, {
     headers: getAuthHeaders(),
   })
 
+  console.log("Impact cards response status:", response.status)
+
   if (!response.ok) {
+    const errorText = await response.text();
+    console.log("Impact cards error response:", errorText);
     throw new Error("Failed to fetch impact cards")
   }
 
