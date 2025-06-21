@@ -26,6 +26,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        console.log("Fetching dashboard stats...")
         const [users, impactCards, achievementCards, successStories, mediaCards, volunteers] = await Promise.all([
           getAllUsers(),
           getAllImpactCards(),
@@ -34,6 +35,15 @@ export default function DashboardPage() {
           getAllMediaCards(),
           getAllVolunteers(),
         ])
+
+        console.log("Stats fetched successfully:", {
+          users: users.length,
+          impactCards: impactCards.length,
+          achievementCards: achievementCards.length,
+          successStories: successStories.length,
+          mediaCards: mediaCards.length,
+          volunteers: volunteers.length,
+        })
 
         setStats({
           users: users.length,
@@ -45,6 +55,15 @@ export default function DashboardPage() {
         })
       } catch (error) {
         console.error("Error fetching stats:", error)
+        // Set default stats on error to prevent white screen
+        setStats({
+          users: 0,
+          impactCards: 0,
+          achievementCards: 0,
+          successStories: 0,
+          mediaCards: 0,
+          volunteers: 0,
+        })
       } finally {
         setLoading(false)
       }
@@ -106,7 +125,7 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Welcome to MANAS Foundation Admin Panel</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(6)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="animate-pulse">
                 <div className="h-4 bg-gray-200 rounded w-3/4"></div>

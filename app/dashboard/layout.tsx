@@ -36,27 +36,38 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const checkAuth = async () => {
+      console.log("Checking authentication...")
       const token = localStorage.getItem("admin_jwt")
       if (!token) {
+        console.log("No token found, redirecting to login")
         router.push("/login")
         return
       }
 
+      console.log("Token found, validating...")
       const { valid, email } = await validateToken(token)
       if (!valid) {
+        console.log("Token invalid, redirecting to login")
         router.push("/login")
         return
       }
 
+      console.log("Token valid, checking authorized users...")
       // Fetch authorized users and check if the user's email is in the list
       try {
         const authorizedUsers = await getAuthorizedEmails()
+        console.log("Authorized users:", authorizedUsers)
+        console.log("User email:", email)
         if (!authorizedUsers.includes(email as string)) {
+          console.log("User not authorized, redirecting to login")
           router.push("/login?error=unauthorized")
           return
         }
         // If everything is fine, user can stay
-      } catch {
+        console.log("Authentication successful, setting isAuthenticated to true")
+        setIsAuthenticated(true)
+      } catch (error) {
+        console.error("Error checking authorization:", error)
         // Clear token on auth error
         localStorage.removeItem("admin_jwt")
         router.push("/login")

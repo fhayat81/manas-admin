@@ -1,6 +1,8 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 
 console.log("API_BASE_URL: ", API_BASE_URL)
+console.log("NEXT_PUBLIC_API_URL env var: ", process.env.NEXT_PUBLIC_API_URL)
+console.log("NEXT_PUBLIC_ADMIN_EMAIL env var: ", process.env.NEXT_PUBLIC_ADMIN_EMAIL)
 
 // Types based on backend models
 export interface User {
@@ -538,6 +540,7 @@ export const deleteEvent = async (id: string): Promise<void> => {
 
 export const getAllVolunteers = async (): Promise<Volunteer[]> => {
   const response = await fetch(`${API_BASE_URL}/volunteer`);
+
   if (!response.ok) {
     throw new Error("Failed to fetch volunteers");
   }
