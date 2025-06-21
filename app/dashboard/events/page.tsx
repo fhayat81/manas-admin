@@ -38,7 +38,7 @@ export default function EventsPage() {
 
   useEffect(() => {
     fetchEvents()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = events.filter((event) =>

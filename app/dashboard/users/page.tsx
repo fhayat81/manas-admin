@@ -36,7 +36,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = users.filter(
@@ -148,9 +148,10 @@ export default function UsersPage() {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Age</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Profession</TableHead>
+                  <TableHead>Caste</TableHead>
+                  <TableHead>Religion</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -159,13 +160,14 @@ export default function UsersPage() {
                   <TableRow key={user._id}>
                     <TableCell className="font-medium">{user.full_name}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.age}</TableCell>
                     <TableCell>
                       <Badge variant={user.is_verified ? "default" : "secondary"}>
                         {user.is_verified ? "Verified" : "Unverified"}
                       </Badge>
                     </TableCell>
                     <TableCell>{user.profession}</TableCell>
+                    <TableCell>{user.caste}</TableCell>
+                    <TableCell>{user.religion}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button
@@ -227,8 +229,8 @@ export default function UsersPage() {
                   <p className="text-sm text-muted-foreground">{selectedUser.email}</p>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium">Age</Label>
-                  <p className="text-sm text-muted-foreground">{selectedUser.age}</p>
+                  <Label className="text-sm font-medium">Date of Birth</Label>
+                  <p className="text-sm text-muted-foreground">{new Date(selectedUser.date_of_birth).toLocaleDateString()}</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Gender</Label>
@@ -253,13 +255,47 @@ export default function UsersPage() {
                 <div>
                   <Label className="text-sm font-medium">Location</Label>
                   <p className="text-sm text-muted-foreground">
-                    {selectedUser.location.city}, {selectedUser.location.state}
+                    {selectedUser.location.village}, {selectedUser.location.tehsil}, {selectedUser.location.district}, {selectedUser.location.state}
                   </p>
                 </div>
+                <div>
+                  <Label className="text-sm font-medium">Guardian Name</Label>
+                  <p className="text-sm text-muted-foreground">{selectedUser.guardian.name}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Guardian Contact</Label>
+                  <p className="text-sm text-muted-foreground">{selectedUser.guardian.contact}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Caste</Label>
+                  <p className="text-sm text-muted-foreground">{selectedUser.caste}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Religion</Label>
+                  <p className="text-sm text-muted-foreground">{selectedUser.religion}</p>
+                </div>
+                {selectedUser.divorce_finalized !== undefined && (
+                  <div>
+                    <Label className="text-sm font-medium">Divorce Finalized</Label>
+                    <p className="text-sm text-muted-foreground">{selectedUser.divorce_finalized ? 'Yes' : 'No'}</p>
+                  </div>
+                )}
                 <div>
                   <Label className="text-sm font-medium">Children Count</Label>
                   <p className="text-sm text-muted-foreground">{selectedUser.children_count}</p>
                 </div>
+                {selectedUser.children && selectedUser.children.length > 0 && (
+                  <div>
+                    <Label className="text-sm font-medium">Children Details</Label>
+                    <div className="space-y-1">
+                      {selectedUser.children.map((child, index) => (
+                        <p key={index} className="text-sm text-muted-foreground">
+                          Child {index + 1}: {child.gender}, Age: {child.age}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               {selectedUser.interests_hobbies && (
                 <div>
@@ -326,7 +362,7 @@ function UserEditForm({
   const [formData, setFormData] = useState({
     full_name: user.full_name,
     email: user.email,
-    age: user.age,
+    date_of_birth: user.date_of_birth,
     gender: user.gender,
     marital_status: user.marital_status,
     education: user.education,
@@ -335,6 +371,11 @@ function UserEditForm({
     interests_hobbies: user.interests_hobbies || "",
     brief_personal_description: user.brief_personal_description || "",
     location: user.location,
+    guardian: user.guardian,
+    caste: user.caste,
+    religion: user.religion,
+    divorce_finalized: user.divorce_finalized,
+    children: user.children || [],
     children_count: user.children_count,
     is_verified: user.is_verified,
   })
@@ -367,12 +408,12 @@ function UserEditForm({
           />
         </div>
         <div>
-          <Label htmlFor="age">Age</Label>
+          <Label htmlFor="date_of_birth">Date of Birth</Label>
           <Input
-            id="age"
-            type="number"
-            value={formData.age}
-            onChange={(e) => setFormData({ ...formData, age: Number.parseInt(e.target.value) })}
+            id="date_of_birth"
+            type="date"
+            value={formData.date_of_birth}
+            onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
             required
           />
         </div>
@@ -409,6 +450,98 @@ function UserEditForm({
             required
           />
         </div>
+        <div>
+          <Label htmlFor="guardian.name">Guardian Name</Label>
+          <Input
+            id="guardian.name"
+            value={formData.guardian.name}
+            onChange={(e) => setFormData({ ...formData, guardian: { ...formData.guardian, name: e.target.value } })}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="guardian.contact">Guardian Contact</Label>
+          <Input
+            id="guardian.contact"
+            value={formData.guardian.contact}
+            onChange={(e) => setFormData({ ...formData, guardian: { ...formData.guardian, contact: e.target.value } })}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="caste">Caste</Label>
+          <Select
+            value={formData.caste}
+            onValueChange={(value: "general" | "obc" | "sc" | "st" | "other") => setFormData({ ...formData, caste: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="general">General</SelectItem>
+              <SelectItem value="obc">OBC</SelectItem>
+              <SelectItem value="sc">SC</SelectItem>
+              <SelectItem value="st">ST</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="religion">Religion</Label>
+          <Select
+            value={formData.religion}
+            onValueChange={(value: "hindu" | "muslim" | "christian" | "sikh" | "buddhist" | "jain" | "other") => setFormData({ ...formData, religion: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hindu">Hindu</SelectItem>
+              <SelectItem value="muslim">Muslim</SelectItem>
+              <SelectItem value="christian">Christian</SelectItem>
+              <SelectItem value="sikh">Sikh</SelectItem>
+              <SelectItem value="buddhist">Buddhist</SelectItem>
+              <SelectItem value="jain">Jain</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="location.village">Village</Label>
+          <Input
+            id="location.village"
+            value={formData.location.village}
+            onChange={(e) => setFormData({ ...formData, location: { ...formData.location, village: e.target.value } })}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="location.tehsil">Tehsil</Label>
+          <Input
+            id="location.tehsil"
+            value={formData.location.tehsil}
+            onChange={(e) => setFormData({ ...formData, location: { ...formData.location, tehsil: e.target.value } })}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="location.district">District</Label>
+          <Input
+            id="location.district"
+            value={formData.location.district}
+            onChange={(e) => setFormData({ ...formData, location: { ...formData.location, district: e.target.value } })}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="location.state">State</Label>
+          <Input
+            id="location.state"
+            value={formData.location.state}
+            onChange={(e) => setFormData({ ...formData, location: { ...formData.location, state: e.target.value } })}
+            required
+          />
+        </div>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -418,6 +551,28 @@ function UserEditForm({
           onCheckedChange={(checked) => setFormData({ ...formData, is_verified: checked })}
         />
         <Label htmlFor="is_verified">Verified User</Label>
+      </div>
+
+      {formData.marital_status === 'divorcee' && (
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="divorce_finalized"
+            checked={formData.divorce_finalized || false}
+            onCheckedChange={(checked) => setFormData({ ...formData, divorce_finalized: checked })}
+          />
+          <Label htmlFor="divorce_finalized">Divorce Legally Finalized</Label>
+        </div>
+      )}
+
+      <div>
+        <Label htmlFor="children_count">Number of Children</Label>
+        <Input
+          id="children_count"
+          type="number"
+          min="0"
+          value={formData.children_count}
+          onChange={(e) => setFormData({ ...formData, children_count: Number.parseInt(e.target.value) })}
+        />
       </div>
 
       <DialogFooter>

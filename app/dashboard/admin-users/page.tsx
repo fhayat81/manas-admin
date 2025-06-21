@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchAdminUsers()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = adminUsers.filter((user) =>

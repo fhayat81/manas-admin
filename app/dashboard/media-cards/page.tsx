@@ -34,7 +34,7 @@ export default function MediaCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = cards.filter(
@@ -172,7 +172,7 @@ export default function MediaCardsPage() {
                   <TableHead>Source</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Detail</TableHead>
+                  <TableHead>URL</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -183,7 +183,24 @@ export default function MediaCardsPage() {
                     <TableCell>{card.source}</TableCell>
                     <TableCell>{card.date}</TableCell>
                     <TableCell className="max-w-xs truncate">{card.description}</TableCell>
-                    <TableCell className="max-w-xs truncate">{card.detailedDescription?.slice(0, 40) || ''}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">/media/{card._id}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(`/media/${card._id}`);
+                            toast({
+                              title: "URL Copied",
+                              description: "Media URL copied to clipboard",
+                            });
+                          }}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button

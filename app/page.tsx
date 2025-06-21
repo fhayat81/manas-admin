@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,8 +16,26 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
   const [loading, setLoading] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const router = useRouter()
   const { toast } = useToast()
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("admin_jwt")
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        if (payload.exp && payload.exp * 1000 > Date.now() && payload.isAdmin) {
+          router.push("/dashboard")
+          return
+        }
+      } catch (error) {
+        // Invalid token, continue to login
+      }
+    }
+    setCheckingAuth(false)
+  }, [router])
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,13 +74,21 @@ export default function LoginPage() {
       router.push("/dashboard")
     } catch {
       toast({
-        title: "Error",
-        description: "Invalid OTP. Please try again.",
+        title: "Login Failed",
+        description: "Invalid email or password. Please try again.",
         variant: "destructive",
       })
     } finally {
       setLoading(false)
     }
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      </div>
+    )
   }
 
   return (

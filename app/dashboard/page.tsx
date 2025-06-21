@@ -9,6 +9,7 @@ import {
   getAllAchievementCards,
   getAllSuccessStories,
   getAllMediaCards,
+  getAllVolunteers,
 } from "@/lib/api"
 
 export default function DashboardPage() {
@@ -18,18 +19,20 @@ export default function DashboardPage() {
     achievementCards: 0,
     successStories: 0,
     mediaCards: 0,
+    volunteers: 0,
   })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [users, impactCards, achievementCards, successStories, mediaCards] = await Promise.all([
+        const [users, impactCards, achievementCards, successStories, mediaCards, volunteers] = await Promise.all([
           getAllUsers(),
           getAllImpactCards(),
           getAllAchievementCards(),
           getAllSuccessStories(),
           getAllMediaCards(),
+          getAllVolunteers(),
         ])
 
         setStats({
@@ -38,6 +41,7 @@ export default function DashboardPage() {
           achievementCards: achievementCards.length,
           successStories: successStories.length,
           mediaCards: mediaCards.length,
+          volunteers: volunteers.length,
         })
       } catch (error) {
         console.error("Error fetching stats:", error)
@@ -84,6 +88,13 @@ export default function DashboardPage() {
       description: "Media coverage",
       icon: Newspaper,
       color: "text-purple-600",
+    },
+    {
+      title: "Volunteer Applications",
+      value: stats.volunteers,
+      description: "People who want to volunteer",
+      icon: Heart,
+      color: "text-pink-600",
     },
   ]
 

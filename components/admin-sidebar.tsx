@@ -40,6 +40,11 @@ const menuItems = [
     icon: Calendar,
   },
   {
+    title: "Volunteer Applications",
+    url: "/dashboard/volunteers",
+    icon: Heart,
+  },
+  {
     title: "Impact Cards",
     url: "/dashboard/impact-cards",
     icon: Heart,
@@ -67,7 +72,7 @@ export function AdminSidebar() {
   const { toast } = useToast()
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken")
+    localStorage.removeItem("admin_jwt")
     toast({
       title: "Logged out successfully",
       description: "You have been logged out of the admin panel.",

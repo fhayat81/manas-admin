@@ -21,6 +21,11 @@ import { Search, Edit, Trash2, Plus, ExternalLink } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { getAllImpactCards, createImpactCard, updateImpactCard, deleteImpactCard, type ImpactCard } from "@/lib/api"
 
+// Function to generate impact URL using database ID
+const generateImpactUrl = (id: string): string => {
+  return `/impact/${id}`
+}
+
 export default function ImpactCardsPage() {
   const [cards, setCards] = useState<ImpactCard[]>([])
   const [filteredCards, setFilteredCards] = useState<ImpactCard[]>([])
@@ -34,7 +39,7 @@ export default function ImpactCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = cards.filter(
@@ -48,8 +53,13 @@ export default function ImpactCardsPage() {
   const fetchCards = async () => {
     try {
       const data = await getAllImpactCards()
-      setCards(data)
-      setFilteredCards(data)
+      // Update existing cards to use ID-based URLs if they don't have them
+      const updatedData = data.map(card => ({
+        ...card,
+        link: card.link.startsWith('/impact/') ? card.link : generateImpactUrl(card._id)
+      }))
+      setCards(updatedData)
+      setFilteredCards(updatedData)
     } catch {
       toast({
         title: "Error",
@@ -64,7 +74,14 @@ export default function ImpactCardsPage() {
   const handleCreateCard = async (cardData: Omit<ImpactCard, "_id" | "id">) => {
     try {
       const newCard = await createImpactCard(cardData)
-      setCards([...cards, newCard])
+      // Generate the impact URL using the new card's ID
+      const impactUrl = generateImpactUrl(newCard._id)
+      const updatedCard = { ...newCard, link: impactUrl }
+      
+      // Update the card in the backend with the correct link
+      await updateImpactCard(newCard._id, { link: impactUrl })
+      
+      setCards([...cards, updatedCard])
       setCreateDialogOpen(false)
       toast({
         title: "Success",
@@ -169,7 +186,7 @@ export default function ImpactCardsPage() {
                 <TableRow>
                   <TableHead>Title</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Link</TableHead>
+                  <TableHead>Impact URL</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -179,11 +196,16 @@ export default function ImpactCardsPage() {
                     <TableCell className="font-medium">{card.title}</TableCell>
                     <TableCell className="max-w-xs truncate">{card.description}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" asChild>
-                        <a href={card.link} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground font-mono">
+                          {card.link}
+                        </span>
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={card.link} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
@@ -296,6 +318,11 @@ function ImpactCardForm({
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           required
         />
+        {card && (
+          <p className="text-sm text-muted-foreground mt-1">
+            URL: <span className="font-mono">{card.link}</span>
+          </p>
+        )}
       </div>
       <div>
         <Label htmlFor="description">Description</Label>
@@ -313,16 +340,6 @@ function ImpactCardForm({
           type="text"
           value={formData.imageUrl}
           onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="link">Link</Label>
-        <Input
-          id="link"
-          type="text"
-          value={formData.link}
-          onChange={(e) => setFormData({ ...formData, link: e.target.value })}
           required
         />
       </div>

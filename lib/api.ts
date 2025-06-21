@@ -7,7 +7,7 @@ export interface User {
   _id: string
   full_name: string
   email: string
-  age: number
+  date_of_birth: string
   gender: "male" | "female"
   marital_status: "divorcee" | "widow" | "single"
   education: "none" | "primary school" | "high school" | "bachelor's" | "master's" | "phd"
@@ -16,9 +16,22 @@ export interface User {
   interests_hobbies?: string
   brief_personal_description?: string
   location: {
-    city: string
+    village: string
+    tehsil: string
+    district: string
     state: string
   }
+  guardian: {
+    name: string
+    contact: string
+  }
+  caste: "general" | "obc" | "sc" | "st" | "other"
+  religion: "hindu" | "muslim" | "christian" | "sikh" | "buddhist" | "jain" | "other"
+  divorce_finalized?: boolean
+  children?: {
+    gender: "boy" | "girl"
+    age: number
+  }[]
   children_count: number
   is_verified: boolean
   created_at: string
@@ -87,6 +100,20 @@ export interface Event {
   updatedAt?: string;
 }
 
+export interface Volunteer {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  why: string;
+  areas: string[];
+  areaOther?: string;
+  availability: string;
+  experience?: string;
+  createdAt: string;
+}
+
 // Auth functions
 export const sendAdminOTP = async (email: string) => {
   const response = await fetch(`${API_BASE_URL}/admin/send-otp`, {
@@ -130,23 +157,55 @@ const getAuthHeaders = () => {
   }
 }
 
+// Get authorized admin emails
+export const getAuthorizedEmails = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/admin-users`, {
+      headers: getAuthHeaders(),
+    })
+    if (!response.ok) throw new Error("Failed to fetch admin users")
+    const adminUsers = await response.json()
+    return [
+      'manasfoundation2025@gmail.com', // Hardcoded admin email
+      ...adminUsers.map((user: any) => user.email)
+    ]
+  } catch (error) {
+    // Fallback to hardcoded email if API fails
+    return ['manasfoundation2025@gmail.com']
+  }
+}
+
+export const getAuthorizedAdminEmails = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/authorized-emails`, {
+      headers: getAuthHeaders(),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch authorized emails")
+    }
+
+    const data = await response.json();
+    return data.emails;
+  } catch (error: unknown) {
+    console.error("Failed to fetch authorized emails:", error)
+    throw error
+  }
+}
+
 // User Management
 export const getAllUsers = async (): Promise<User[]> => {
-  const token = localStorage.getItem("admin_jwt")
-  console.log("token: ", token)
   const response = await fetch(`${API_BASE_URL}/admin/users`, {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+      headers: getAuthHeaders(),
       mode: 'cors'
   })
 
   console.log("response: ", response)
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.log("Error response:", errorText);
     throw new Error("Failed to fetch users")
   }
 
@@ -475,4 +534,12 @@ export const deleteEvent = async (id: string): Promise<void> => {
     headers: getAuthHeaders(),
   });
   if (!response.ok) throw new Error("Failed to delete event");
+};
+
+export const getAllVolunteers = async (): Promise<Volunteer[]> => {
+  const response = await fetch(`${API_BASE_URL}/volunteer`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch volunteers");
+  }
+  return response.json();
 };
