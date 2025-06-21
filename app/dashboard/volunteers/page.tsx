@@ -2,29 +2,19 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-interface Volunteer {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  why: string;
-  areas: string[];
-  areaOther?: string;
-  availability: string;
-  experience?: string;
-  createdAt: string;
-}
+import { getAllVolunteers, Volunteer } from "@/lib/api";
 
 export default function VolunteersPage() {
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}/api/volunteer`)
-      .then((res) => res.json())
+    getAllVolunteers()
       .then(setVolunteers)
+      .catch((error) => {
+        console.error("Error fetching volunteers:", error);
+        setVolunteers([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
