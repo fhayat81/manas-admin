@@ -40,7 +40,7 @@ export default function AchievementCardsPage() {
 
   useEffect(() => {
     fetchCards()
-  })
+  }, [])
 
   useEffect(() => {
     const filtered = cards.filter(
