@@ -238,4 +238,4 @@ The app can be deployed to any platform that supports Next.js:
 
 ## Support
 
-For support, email admin@example.com or create an issue in the repository. 
+For support, email fazalhayatkhan001@gmail.com or create an issue in the repository. 
