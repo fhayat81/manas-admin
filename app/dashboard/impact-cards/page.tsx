@@ -53,13 +53,8 @@ export default function ImpactCardsPage() {
   const fetchCards = async () => {
     try {
       const data = await getAllImpactCards()
-      // Update existing cards to use ID-based URLs if they don't have them
-      const updatedData = data.map(card => ({
-        ...card,
-        link: card.link.startsWith('/impact/') ? card.link : generateImpactUrl(card._id)
-      }))
-      setCards(updatedData)
-      setFilteredCards(updatedData)
+      setCards(data)
+      setFilteredCards(data)
     } catch {
       toast({
         title: "Error",
@@ -74,14 +69,7 @@ export default function ImpactCardsPage() {
   const handleCreateCard = async (cardData: Omit<ImpactCard, "_id" | "id">) => {
     try {
       const newCard = await createImpactCard(cardData)
-      // Generate the impact URL using the new card's ID
-      const impactUrl = generateImpactUrl(newCard._id)
-      const updatedCard = { ...newCard, link: impactUrl }
-      
-      // Update the card in the backend with the correct link
-      await updateImpactCard(newCard._id, { link: impactUrl })
-      
-      setCards([...cards, updatedCard])
+      setCards([...cards, newCard])
       setCreateDialogOpen(false)
       toast({
         title: "Success",
@@ -197,11 +185,9 @@ export default function ImpactCardsPage() {
                     <TableCell className="max-w-xs truncate">{card.description}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground font-mono">
-                          {card.link}
-                        </span>
+                        <span className="text-sm text-muted-foreground font-mono">/impact/{card._id}</span>
                         <Button variant="ghost" size="sm" asChild>
-                          <a href={card.link} target="_blank" rel="noopener noreferrer">
+                          <a href={`/impact/${card._id}`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                           </a>
                         </Button>
@@ -299,7 +285,6 @@ function ImpactCardForm({
     title: card?.title || "",
     description: card?.description || "",
     imageUrl: card?.imageUrl || "",
-    link: card?.link || "",
     detailedDescription: card?.detailedDescription || "",
   })
 
@@ -318,11 +303,6 @@ function ImpactCardForm({
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           required
         />
-        {card && (
-          <p className="text-sm text-muted-foreground mt-1">
-            URL: <span className="font-mono">{card.link}</span>
-          </p>
-        )}
       </div>
       <div>
         <Label htmlFor="description">Description</Label>

@@ -46,7 +46,6 @@ export interface ImpactCard {
   title: string
   description: string
   imageUrl: string
-  link: string
   detailedDescription: string
 }
 
